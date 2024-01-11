@@ -1,3 +1,5 @@
+use std::env;
+
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::util::Timeout;
 
@@ -5,12 +7,15 @@ use rdkafka::util::Timeout;
 async fn main() {
     // Define Kafka producer configuration
     let producer: FutureProducer = rdkafka::config::ClientConfig::new()
-        .set("bootstrap.servers", "localhost:9092")
+        .set(
+            "bootstrap.servers",
+            env::var("KAFKA_BOOTSTRAP_ADDRESS").unwrap(),
+        )
         .create()
         .expect("Producer creation error");
 
     // Define the Kafka topic to produce messages to
-    let kafka_topic = "test_kunjesh";
+    let kafka_topic = &env::var("KAFKA_TOPIC").unwrap();
 
     // Sample data to be written to Kafka
     let sample_data = "Hello, Kunjesh!";
